@@ -2,6 +2,7 @@ import csv
 import sys
 import MySQLdb
 from MySQLdb import Error
+from csv_operations import crear_archivos
 
 def conectar_bd():
     try:
@@ -31,12 +32,24 @@ def insertar_datos(db,archivo_csv):
         with open(archivo_csv, 'r', newline='') as archivo_csv:
             lector_csv = csv.reader(archivo_csv, delimiter=',', quotechar='"')
             for fila in lector_csv:
-                sql = "INSERT INTO provincias(provincia, localidad, cp, id_prov_mstr) VALUES(%s, %s, %s, %s)"
+                sql = "INSERT INTO provincias(provincia, cp, localidad, id_prov_mstr) VALUES(%s, %s, %s, %s)"
                 cursor.execute(sql, (fila[0], fila[1], fila[2], fila[3]))
             db.commit()
             print("Datos insertados con éxito")
     except Error as e:
         print("Error al insertar los datos",e)
+
+def eliminar_datos_innecesarios(db):
+    try:
+        
+        cursor = db.cursor()
+        sql = "DELETE FROM provincias WHERE id = 1 AND provincia = 'provincia' AND localidad = 'localidad' AND cp = 'id' AND id_prov_mstr = 0"
+        cursor.execute(sql)
+        db.commit()
+        print("Datos innecesarios eliminados con éxito")
+    except Error as e:
+        print("Error al eliminar los datos innecesarios",e)
+        sys.exit(1)
 
 def agrupar_por_provincia(db):
     try:
@@ -57,20 +70,3 @@ def agrupar_por_provincia(db):
         return None
     
 
-    
-    
-    
-    
-    
-    
-    
-    
-    # finally:
-    #     db.close()
-
-if __name__ == '__main__':
-    archivo_csv = 'localidades.csv'
-    db = conectar_bd()
-    crear_tabla(db)
-    insertar_datos(db,archivo_csv)
-    agrupar_por_provincia(db)
