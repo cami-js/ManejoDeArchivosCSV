@@ -27,15 +27,21 @@ def crear_tabla(db):
         sys.exit(1)
 
 def insertar_datos(db,archivo_csv):
+    list = []
     try:
-        cursor = db.cursor()
         with open(archivo_csv, 'r', newline='') as archivo_csv:
             lector_csv = csv.reader(archivo_csv, delimiter=',', quotechar='"')
             for fila in lector_csv:
-                sql = "INSERT INTO provincias(provincia, cp, localidad, id_prov_mstr) VALUES(%s, %s, %s, %s)"
-                cursor.execute(sql, (fila[0], fila[1], fila[2], fila[3]))
-            db.commit()
-            print("Datos insertados con éxito")
+                provincia = fila[0]
+                cp = fila[1]
+                localidad = fila[2]
+                id_prov_mstr = fila[3]
+                list.append((provincia, cp, localidad, id_prov_mstr))
+        cursor = db.cursor()
+        sql = "INSERT INTO provincias(provincia, cp, localidad, id_prov_mstr) VALUES(%s, %s, %s, %s)"
+        cursor.executemany(sql, list)
+        db.commit()
+        print("Datos insertados con éxito")
     except Error as e:
         print("Error al insertar los datos",e)
 
@@ -63,7 +69,6 @@ def agrupar_por_provincia(db):
                 provincias[provincia] = []
                 provincias[provincia].append(localidad)
         print("Datos agrupados con éxito")
-        print(provincias)
         return provincias
     except Error as e:
         print("Error al agrupar los datos",e)

@@ -3,17 +3,13 @@ import sys
 
 def leer_archivo(archivo_csv):
     try:
-        with open('localidades.csv', newline='') as archivo_csv:
+        with open(archivo_csv, newline='') as archivo_csv:
             lector_csv = csv.reader(archivo_csv, delimiter=',', quotechar='"')
-            for fila in lector_csv:
-                print(fila)
+            print("Archivo leído con éxito")
     except Exception as e:
         print("Error al leer el archivo",e)
         sys.exit(1)
-with open('localidades.csv', newline='') as archivo_csv:
-    lector_csv = csv.reader(archivo_csv, delimiter=',', quotechar='"')
-    for fila in lector_csv:
-        print(fila)
+
 
 def crear_archivos(provincias, db):
     try:

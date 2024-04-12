@@ -1,12 +1,15 @@
 from database_operations import conectar_bd, crear_tabla, insertar_datos, eliminar_datos_innecesarios, agrupar_por_provincia
-from csv_operations import crear_archivos
+from csv_operations import leer_archivo, crear_archivos
 
 def main():
     archivo_csv = 'localidades.csv'
     
+    # Leer archivo CSV
+    leer_archivo(archivo_csv)
+
     # Conectar a la base de datos
     db = conectar_bd()
-    
+
     # Crear tabla si no existe
     crear_tabla(db)
     
